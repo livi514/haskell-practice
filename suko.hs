@@ -1,5 +1,11 @@
 -- This is an example problem we went through in a lecture about design patterns.
 
+-- Polya's heuristic strategies:
+-- 1. Understand the problem.
+-- 2. Devise a plan.
+-- 3. Carry out the plan.
+-- 4. Look back and reflect.
+
 -- A design pattern:
 -- There are a few design patterns for functional programs,
 -- but we shall need only generate-and-select, hinted at by Hughes.
