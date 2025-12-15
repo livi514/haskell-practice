@@ -88,21 +88,20 @@ generator = [[[1,x2,x1],[2,y2,y1],[3,z2,z1]]
 -- X2 must be 4-7 as A must be in the second quadrant.
 -- Similarly, B must be in the third quadrant so Y2 must be 4-6.
 -- Z2 must be 4-5, as the largest possible bearing is 359.
-| x2 <- [4..7]
-, x1 <- [4..9] , x1 `notElem` [x2]
-, y2 <- [4..6] , y2 `notElem` [x2, x1]
-, y1 <- [4..9] , y1 `notElem` [x2, x1, y2]
-, z2 <- [4..5] , z2 `notElem` [x2, x1, y2, y1]
-, z1 <- [4..9] , z1 `notElem` [x2, x1, y2, y1, z2]
-]
+    | x2 <- [4..7]
+    , x1 <- [4..9] , x1 `notElem` [x2]
+    , y2 <- [4..6] , y2 `notElem` [x2, x1]
+    , y1 <- [4..9] , y1 `notElem` [x2, x1, y2]
+    , z2 <- [4..5] , z2 `notElem` [x2, x1, y2, y1]
+    , z1 <- [4..9] , z1 `notElem` [x2, x1, y2, y1, z2]
+    ]
 
 -- A selector:
 -- A selector may be used to filter items that are solutions to the problem.
 -- Each filtered item is a list of 3 bearings, such that the numbers are not prime.
 selector :: [[ Int ]] -> Bool
-selector [ as , bs , cs ]
-= not ( prime a || prime b || prime c )
-where
+selector [ as , bs , cs ] = not ( prime a || prime b || prime c )
+    where
     a = number as
     b = number bs
     c = number cs
@@ -110,7 +109,7 @@ where
 -- An auxiliary function is needed to test if a number is prime.
 prime :: Int -> Bool
 prime n = factors n == [1 , n ]
-where
+    where
     factors n = [ f | f <- [1.. n ] , n `mod` f == 0]
 
 -- Putting it together:
