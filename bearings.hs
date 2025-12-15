@@ -57,12 +57,10 @@
 -- As a warmup, it will be useful to have a function that converts a
 -- list of digits to a number.
 number :: [Int] -> Int
-number xs
-    = totalize (reverse xs)
+number xs = totalize (reverse xs)
         where 
         totalize [] = 0
-        totalize (x:xs)
-            = x + 10 * totalize xs
+        totalize (x:xs) = x + 10 * totalize xs
 -- Example of how number works:
 -- Let's say we have the list [1,2,3].
 -- number [1,2,3] = totalize (reverse [1,2,3])
@@ -83,8 +81,7 @@ number xs
 -- to the problem. Each item is a list of 3 bearings [A, B, C], 
 -- such that the constraints above are satisfied (except the "not prime" constraint).
 generator :: [[[Int]]]
-generator
-= [ [[1 , x2 , x1 ] ,[2 , y2 , y1 ] ,[3 , z2 , z1 ]]
+generator = [[[1,x2,x1],[2,y2,y1],[3,z2,z1]]
 -- Explaining the constraints/ranges:
 -- X2 must be 4-7 because if it was greater than 7, this would cause the bearing to be > 180,
 -- which would place it in the third quadrant.
@@ -92,12 +89,11 @@ generator
 -- Similarly, B must be in the third quadrant so Y2 must be 4-6.
 -- Z2 must be 4-5, as the largest possible bearing is 359.
 | x2 <- [4..7]
-, x1 <- [4..9] , x1 `notElem` [ x2 ]
-, y2 <- [4..6] , y2 `notElem` [ x2 , x1 ]
-, y1 <- [4..9] , y1 `notElem` [ x2 , x1 , y2 ]
-, z2 <- [4..5] , z2 `notElem` [ x2 , x1 , y2 , y1 ]
-, z1 <- [4..9] , z1 `notElem` [ x2 , x1 , y2 , y1 , z2
-    ]
+, x1 <- [4..9] , x1 `notElem` [x2]
+, y2 <- [4..6] , y2 `notElem` [x2, x1]
+, y1 <- [4..9] , y1 `notElem` [x2, x1, y2]
+, z2 <- [4..5] , z2 `notElem` [x2, x1, y2, y1]
+, z1 <- [4..9] , z1 `notElem` [x2, x1, y2, y1, z2]
 ]
 
 -- A selector:
