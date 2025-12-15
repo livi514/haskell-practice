@@ -63,4 +63,88 @@ number xs
         totalize [] = 0
         totalize (x:xs)
             = x + 10 * totalize xs
+-- Example of how number works:
+-- Let's say we have the list [1,2,3].
+-- number [1,2,3] = totalize (reverse [1,2,3])
+-- number [1,2,3] = totalize ([3,2,1])
+-- Applying totalize:
+-- totalize(3,[2,1]) = 3 + 10 * totalize(2,[1])
+-- totalize(2,[1]) = 2 + 10 * totalize(1,[0])
+-- totalize(1,[0]) = 1 + 10 * totalize [0]
+-- totalize [] = 0 (base case)
+-- substituting back:
+-- totalise(1,[0]) = 1 + 10 * 0 = 1
+-- totalise(2,[1]) = 2 + 10 * 1 = 12
+-- totalise(3,[2,1]) = 3 + 10 * 12 = 123 
+-- so we have number[1,2,3] = 123
 
+-- A generator
+-- A generator constructs a list of items that might be solutions
+-- to the problem. Each item is a list of 3 bearings [A, B, C], 
+-- such that the constraints above are satisfied (except the "not prime" constraint).
+generator :: [[[Int]]]
+generator
+= [ [[1 , x2 , x1 ] ,[2 , y2 , y1 ] ,[3 , z2 , z1 ]]
+-- Explaining the constraints/ranges:
+-- X2 must be 4-7 because if it was greater than 7, this would cause the bearing to be > 180,
+-- which would place it in the third quadrant.
+-- X2 must be 4-7 as A must be in the second quadrant.
+-- Similarly, B must be in the third quadrant so Y2 must be 4-6.
+-- Z2 must be 4-5, as the largest possible bearing is 359.
+| x2 <- [4..7]
+, x1 <- [4..9] , x1 `notElem` [ x2 ]
+, y2 <- [4..6] , y2 `notElem` [ x2 , x1 ]
+, y1 <- [4..9] , y1 `notElem` [ x2 , x1 , y2 ]
+, z2 <- [4..5] , z2 `notElem` [ x2 , x1 , y2 , y1 ]
+, z1 <- [4..9] , z1 `notElem` [ x2 , x1 , y2 , y1 , z2
+    ]
+]
+
+-- A selector:
+-- A selector may be used to filter items that are solutions to the problem.
+-- Each filtered item is a list of 3 bearings, such that the numbers are not prime.
+selector :: [[ Int ]] -> Bool
+selector [ as , bs , cs ]
+= not ( prime a || prime b || prime c )
+where
+    a = number as
+    b = number bs
+    c = number cs
+
+-- An auxiliary function is needed to test if a number is prime.
+prime :: Int -> Bool
+prime n = factors n == [1 , n ]
+where
+    factors n = [ f | f <- [1.. n ] , n `mod` f == 0]
+
+-- Putting it together:
+-- The final part of our program for this teaser puts the generator
+-- and selector together, filtering the list from the generator with the selector.
+main :: IO ()
+main = print ( head ( filter selector generator ) )
+
+-- The result of this program is [[1,5,9],[2,6,7],[3,4,8]].
+-- By pure luck!
+
+-- Check the answer:
+-- The right way to solve this problem is to solve the given riddle.
+-- Given the above, if you chose one village at random to
+-- be told only its church spire’s bearing, it might be that you
+-- could not calculate the other two bearings with certainty,
+-- but it would be more likely that you could.
+
+-- The full list of filtered items is as follows.
+-- [[[1,5,9],[2,6,7],[3,4,8]]
+-- ,[[1,6,8],[2,4,9],[3,5,7]]
+-- ,[[1,6,9],[2,4,7],[3,5,8]]
+-- ,[[1,6,9],[2,4,8],[3,5,7]]
+-- ,[[1,7,6],[2,4,9],[3,5,8]]
+-- ,[[1,7,8],[2,4,9],[3,5,6]]
+-- ,[[1,7,6],[2,5,9],[3,4,8]]
+-- ,[[1,7,8],[2,5,9],[3,4,6]]
+-- ]
+-- Now the solution really must be 159, 267, 348 because this is
+-- the only solution where if you chose one bearing at random, it
+-- might be that you could not calculate the other two with
+-- certainty (348), but it would be more likely that you could (159
+-- or 267).
